@@ -358,9 +358,9 @@ void paintShapes(HDC dc) {
       Gdiplus::SolidBrush back(gp(COLOUR_CONSOLE)); g.FillPath(&back, &p);
       Gdiplus::Pen border(gp(COLOUR_BORDER), 1.0f); g.DrawPath(&border, &p);
       Gdiplus::SolidBrush strip(gp(COLOUR_BORDER));
-      g.FillRectangle(&strip, (REAL)(con.left+1), (REAL)(con.top+CONSOLE_STRIP), (REAL)(con.right-con.left-2), (REAL)1);
+      g.FillRectangle(&strip, (float)(con.left+1), (float)(con.top+CONSOLE_STRIP), (float)(con.right-con.left-2), (float)1);
       Gdiplus::SolidBrush dot(gp(COLOUR_ACCENT));
-      for (int i=0;i<3;i++) g.FillEllipse(&dot, (REAL)(con.left+16+i*14), (REAL)(con.top+CONSOLE_STRIP/2-4), (REAL)8, (REAL)8);
+      for (int i=0;i<3;i++) g.FillEllipse(&dot, (float)(con.left+16+i*14), (float)(con.top+CONSOLE_STRIP/2-4), (float)8, (float)8);
     }
     RECT close = closeRect();
     if (g_closeHot) {
