@@ -75,6 +75,7 @@ const COLORREF COLOUR_ACCENT_HOT   = RGB(146, 118, 255);
 const COLORREF COLOUR_ACCENT_DOWN  = RGB(100, 72, 214);
 const COLORREF COLOUR_ACCENT_OFF   = RGB(40, 34, 66);
 const COLORREF COLOUR_ACCENT_INK_OFF = RGB(120, 114, 158);
+const COLORREF COLOUR_FAINT   = RGB(70, 72, 88);
 const COLORREF COLOUR_GOOD     = RGB(80, 200, 120);
 const COLORREF COLOUR_BAD      = RGB(226, 86, 92);
 const COLORREF COLOUR_WHITE    = RGB(255, 255, 255);
@@ -357,9 +358,9 @@ void paintShapes(HDC dc) {
       Gdiplus::SolidBrush back(gp(COLOUR_CONSOLE)); g.FillPath(&back, &p);
       Gdiplus::Pen border(gp(COLOUR_BORDER), 1.0f); g.DrawPath(&border, &p);
       Gdiplus::SolidBrush strip(gp(COLOUR_BORDER));
-      g.FillRectangle(&strip, con.left+1.0f, con.top+CONSOLE_STRIP, con.right-con.left-2.0f, 1.0f);
+      g.FillRectangle(&strip, (REAL)(con.left+1), (REAL)(con.top+CONSOLE_STRIP), (REAL)(con.right-con.left-2), (REAL)1);
       Gdiplus::SolidBrush dot(gp(COLOUR_ACCENT));
-      for (int i=0;i<3;i++) g.FillEllipse(&dot, con.left+16+i*14, con.top+CONSOLE_STRIP/2-4, 8.0f, 8.0f);
+      for (int i=0;i<3;i++) g.FillEllipse(&dot, (REAL)(con.left+16+i*14), (REAL)(con.top+CONSOLE_STRIP/2-4), (REAL)8, (REAL)8);
     }
     RECT close = closeRect();
     if (g_closeHot) {
