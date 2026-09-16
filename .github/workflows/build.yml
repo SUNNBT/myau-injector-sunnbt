@@ -56,8 +56,9 @@ jobs:
         run: |
           mkdir -p artifact
           ls OpenMyau-Inject/build/libs/*.jar | grep -vE 'sources|javadoc|dev' | head -1 | xargs -I{} cp {} artifact/Myau-Client.jar
-          cp myau-natives/build/Release/myau_loader.exe artifact/ || true
-          cp myau-natives/build/Release/myau_native.dll artifact/ || true
+          # Ninja 单配置器: exe/dll 直接在 build/ 根目录, 也兼容 Release/ 子目录
+          find myau-natives/build -name 'myau_loader.exe' -exec cp {} artifact/ \;
+          find myau-natives/build -name 'myau_native.dll' -exec cp {} artifact/ \;
           ls -la artifact/
 
       - name: Upload build artifacts
