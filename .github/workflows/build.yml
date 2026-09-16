@@ -6,9 +6,6 @@
 #   - Myau-Client.jar      (Java 客户端, Forge 1.8.9)
 #   - myau_loader.exe      (Windows 注入器, 双击运行)
 #   - myau_native.dll      (被注入到游戏进程的 native)
-#
-# 为什么用 windows-latest: myau-natives 是 Win32/GDI+/DLL 注入, 必须在
-# Windows + MSVC 上构建; 客户端在同一 job 里先 build, cmake 自动找 jar.
 # =============================================================================
 name: Build InjectMyau
 
@@ -29,7 +26,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '17'   # README 明确要求 17: 16+ 才能跑 pack200, 21+ 会破坏工具链
+          java-version: '17'
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
@@ -42,11 +39,11 @@ jobs:
       - name: Set up MSVC (VS 2022)
         uses: ilammy/msvc-dev-cmd@v1
 
-      - name: Configure loader (CMake / MSVC)
+      - name: Configure loader (CMake / Ninja)
         working-directory: myau-natives
         shell: pwsh
         run: |
-          cmake -S . -B build -G "Visual Studio 17 2022" -A x64 `
+          cmake -S . -B build -G Ninja `
                 -DJAVA_INCLUDE="$env:JAVA_HOME/include"
 
       - name: Build loader (Release)
@@ -58,9 +55,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p artifact
-          # 客户端 jar (排除 sources/dev jar)
           ls OpenMyau-Inject/build/libs/*.jar | grep -vE 'sources|javadoc|dev' | head -1 | xargs -I{} cp {} artifact/Myau-Client.jar
-          # loader 与 native dll
           cp myau-natives/build/Release/myau_loader.exe artifact/ || true
           cp myau-natives/build/Release/myau_native.dll artifact/ || true
           ls -la artifact/
