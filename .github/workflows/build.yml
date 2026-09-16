@@ -36,14 +36,22 @@ jobs:
 
       - name: Build Java client (Forge 1.8.9)
         working-directory: OpenMyau-Inject
+        shell: pwsh
         run: ./gradlew.bat --no-daemon build
+
+      - name: Set up MSVC (VS 2022)
+        uses: ilammy/msvc-dev-cmd@v1
 
       - name: Configure loader (CMake / MSVC)
         working-directory: myau-natives
-        run: cmake -S . -B build -G "Visual Studio 17 2022" -A x64 -DJAVA_INCLUDE="$env:JAVA_HOME/include"
+        shell: pwsh
+        run: |
+          cmake -S . -B build -G "Visual Studio 17 2022" -A x64 `
+                -DJAVA_INCLUDE="$env:JAVA_HOME/include"
 
       - name: Build loader (Release)
         working-directory: myau-natives
+        shell: pwsh
         run: cmake --build build --config Release
 
       - name: Stage artifacts
