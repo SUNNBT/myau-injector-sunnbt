@@ -1,0 +1,33 @@
+package myau.mixin;
+
+import myau.event.EventManager;
+import myau.events.StuckMoveEntityWithHeadingEvent;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+/**
+ * Stuck 模块专用 MoveEntityWithHeading 注入点（对齐 expo EntityLivingBaseHooks）。
+ * EntityLivingBase.moveEntityWithHeading HEAD，可取消，仅服务于 Stuck 模块。
+ */
+@Mixin(value = {EntityLivingBase.class})
+public abstract class MixinEntityLivingBaseStuck {
+    @Inject(
+            method = {"moveEntityWithHeading"},
+            at = {@At("HEAD")},
+            cancellable = true
+    )
+    private void onStuckMoveEntityWithHeading(float strafe, float forward, CallbackInfo callbackInfo) {
+        if ((Entity) ((Object) this) instanceof EntityPlayerSP) {
+            StuckMoveEntityWithHeadingEvent event = new StuckMoveEntityWithHeadingEvent();
+            EventManager.call(event);
+            if (event.isCancelled()) {
+                callbackInfo.cancel();
+            }
+        }
+    }
+}
